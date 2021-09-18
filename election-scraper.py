@@ -2,15 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 import xlsxwriter
 
-
-
 def main(URL):
     r = requests.get(URL)
     soup = BeautifulSoup(r.content, "html.parser", from_encoding="utf8")
     workbook = xlsxwriter.Workbook('projekt_3.xlsx')
     worksheet = workbook.add_worksheet()
     m = q = s = 1
-
     voh(soup,worksheet)
     zapis_cisla(soup,worksheet,q,m)
     volebni_strany(worksheet,workbook)
@@ -30,6 +27,7 @@ def voh(soup,worksheet):
             for neco in soup1.find_all("td",class_="cislo",headers="t1sa2 t1sb3"):
                 celkem = neco.get_text()
                 celkem_list.append(celkem)
+                
             for neco in soup1.find_all("td",class_="cislo",headers="t2sa2 t2sb3"):
                 celkem1 = neco.get_text()
                 celkem_list.append(celkem1)
@@ -49,7 +47,6 @@ def voh(soup,worksheet):
             worksheet.write(f"D{m}", obalky)
             worksheet.write(f"E{m}", hlasy_ok)
             zapis_nazvy(worksheet)
-
 
 def zapis_nazvy(worksheet):
     hlavicka = ["KOD","JMENO","VOLICI","OBALKY","HLASY"]
