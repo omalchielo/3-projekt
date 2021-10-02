@@ -4,21 +4,25 @@ import xlsxwriter
 import sys
 
 
-def main(URL, misto):
+def main(url, misto):
 
-    print("Beru data z", URL)
-    print("Zapisuji data do", misto)
-    r = requests.get(URL)
+    print("Beru data z", url)
+
+    r = requests.get(url)
     soup = BeautifulSoup(r.content, "html.parser", from_encoding="utf8")
-    workbook = xlsxwriter.Workbook(f'{misto}.xlsx')
+    if "." in misto:
+        workbook = xlsxwriter.Workbook(f'{misto}')
+    else:
+        workbook = xlsxwriter.Workbook(f'{misto}.xlsx')
+    print("zapisuji data do", misto)
     worksheet = workbook.add_worksheet()
 
-    voh(soup, worksheet)
+    vypis_sloupce(soup, worksheet)
     zapis_cisla(soup, worksheet)
     volebni_strany(worksheet, workbook)
 
 
-def voh(soup, worksheet):
+def vypis_sloupce(soup, worksheet):
     m = 1
     n = 1
     celkem_list = []
@@ -27,17 +31,16 @@ def voh(soup, worksheet):
 
         kod = str(tag.string)
         if kod.isdigit():
-
             m += 1
-            URL1 = f"https://volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec={kod}&xvyber=7103"
-            r = requests.get(URL1)
+            url1 = f"https://volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec={kod}&xvyber=7103"
+            r = requests.get(url1)
             soup1 = BeautifulSoup(r.content, "html.parser", from_encoding="utf8")
-            for neco in soup1.find_all("td", class_="cislo", headers="t1sa2 t1sb3"):
 
+            for neco in soup1.find_all("td", class_="cislo", headers="t1sa2 t1sb3"):
                 celkem = neco.get_text()
                 celkem_list.append(celkem)
-            for neco in soup1.find_all("td", class_="cislo", headers="t2sa2 t2sb3"):
 
+            for neco in soup1.find_all("td", class_="cislo", headers="t2sa2 t2sb3"):
                 celkem1 = neco.get_text()
                 celkem_list.append(celkem1)
 
@@ -83,8 +86,8 @@ def zapis_cisla(soup, worksheet):
 
 
 def volebni_strany(worksheet, workbook):
-    URL2 = "https://volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec=506761&xvyber=7103"
-    r = requests.get(URL2)
+    url2 = "https://volby.cz/pls/ps2017nss/ps311?xjazyk=CZ&xkraj=12&xobec=506761&xvyber=7103"
+    r = requests.get(url2)
     soup = BeautifulSoup(r.content, "html.parser", from_encoding="utf8")
 
     list_stran = []
@@ -101,10 +104,14 @@ def volebni_strany(worksheet, workbook):
     workbook.close()
 
 
-if __name__ == "__main__":
-    URL = sys.argv[1]
+def start():
+    url = sys.argv[1]
     misto = sys.argv[2]
-    if "https" not in URL:
+    if "https" not in url:
         print("Zadej spravnou adresu!")
         quit()
-    main(URL, misto)
+    main(url, misto)
+
+
+if __name__ == "__main__":
+    start()
