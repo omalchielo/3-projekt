@@ -1,4 +1,4 @@
-# Engeto-pa-3-projekt
+# 3-projekt
 # POPIS PROJEKTU:
 
 Tento projekt slouži k získání vstupů z parlamentních voleb z roku 2017. Odkaz na volby je [zde](https://volby.cz/pls/ps2017nss/ps3?xjazyk=CZ)
